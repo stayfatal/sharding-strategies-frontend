@@ -1,0 +1,42 @@
+.system-load-page__delete-form {
+  margin-top: 24px;
+}
+
+.system-load-page__description {
+  margin-top: 16px;
+}
+
+.system-load-page__description .form-label {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.system-load-page__description textarea {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-light) !important;
+  color: var(--text-primary) !important;
+  border-radius: 8px;
+}
+
+.system-load-page__description textarea:focus {
+  border-color: var(--acid) !important;
+  box-shadow: 0 0 0 2px rgba(177, 255, 5, 0.15);
+}
+
+.load-table__input {
+  max-width: 120px;
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border-light) !important;
+  color: var(--text-secondary) !important;
+  font-size: 14px;
+}
+
+.load-table__input:focus {
+  border-color: var(--acid) !important;
+  box-shadow: 0 0 0 2px rgba(177, 255, 5, 0.12);
+}
+
+.load-table__input--accent {
+  color: var(--acid) !important;
+  font-weight: 600;
+}
