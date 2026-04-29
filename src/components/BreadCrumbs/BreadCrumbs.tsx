@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, matchPath, useLocation } from "react-router-dom";
 import { getMockStrategy } from "../../modules/mock";
+import { getStrategy } from "../../modules/strategiesApi";
 import { ROUTES } from "../../routePaths";
 import "./BreadCrumbs.css";
 
@@ -18,8 +19,21 @@ export default function BreadCrumbs() {
       return;
     }
     const id = Number(rawId);
-    const s = getMockStrategy(id);
-    setStrategyTitle(s?.title ?? `Стратегия ${id}`);
+    let cancelled = false;
+    const run = async () => {
+      const data = await getStrategy(id);
+      if (cancelled) return;
+      if (data?.title) {
+        setStrategyTitle(data.title);
+        return;
+      }
+      const s = getMockStrategy(id);
+      setStrategyTitle(s?.title ?? `Стратегия ${id}`);
+    };
+    void run();
+    return () => {
+      cancelled = true;
+    };
   }, [pathname]);
 
   const crumbs: Crumb[] = (() => {

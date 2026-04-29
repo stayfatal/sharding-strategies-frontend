@@ -1,11 +1,6 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState, type MouseEvent } from "react";
-import {
-  fallbackImageUrl,
-  resolveMediaUrl,
-  type ShardingStrategyJSON,
-} from "../../modules/strategiesApi";
-import { addStrategyToMockSystemLoad } from "../../modules/mock";
+import { useEffect, useState } from "react";
+import { fallbackImageUrl, resolveMediaUrl, type ShardingStrategyJSON } from "../../modules/strategiesApi";
 import "./StrategyCard.css";
 
 function photoSrc(photo_url: string, imageError: boolean): string {
@@ -16,7 +11,6 @@ function photoSrc(photo_url: string, imageError: boolean): string {
 export default function StrategyCard({ strategy }: { strategy: ShardingStrategyJSON }) {
   const [imageError, setImageError] = useState(false);
   const [imageUrl, setImageUrl] = useState(photoSrc(strategy.photo_url, false));
-  const [adding, setAdding] = useState(false);
 
   useEffect(() => {
     setImageError(false);
@@ -26,20 +20,6 @@ export default function StrategyCard({ strategy }: { strategy: ShardingStrategyJ
   const handleImageError = () => {
     setImageError(true);
     setImageUrl(fallbackImageUrl());
-  };
-
-  const handleAdd = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setAdding(true);
-    try {
-      const result = await addStrategyToMockSystemLoad(strategy.strategy_id);
-      if (!result.ok) {
-        window.alert("message" in result ? result.message : "Не удалось добавить стратегию в заявку.");
-      }
-    } finally {
-      setAdding(false);
-    }
   };
 
   return (
@@ -65,9 +45,11 @@ export default function StrategyCard({ strategy }: { strategy: ShardingStrategyJ
           </div>
         </div>
       </Link>
+      {/*
       <button type="button" className="card-add-btn" onClick={handleAdd} disabled={adding}>
         {adding ? "Добавление…" : "Добавить в заявку"}
       </button>
+      */}
     </div>
   );
 }

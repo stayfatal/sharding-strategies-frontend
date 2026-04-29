@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { MOCK_CART } from "../../modules/mock";
 import "./AppHeader.css";
 
 export default function AppHeader() {
@@ -25,16 +24,7 @@ export default function AppHeader() {
               <Nav.Link as={Link} to="/" className="shard-nav-link" eventKey="catalog">
                 Каталог стратегий
               </Nav.Link>
-              {MOCK_CART.has_draft && MOCK_CART.id != null ? (
-                <Nav.Link
-                  as={Link}
-                  to={`/system_load/${MOCK_CART.id}`}
-                  className="shard-nav-link"
-                  eventKey="draft"
-                >
-                  Текущая заявка
-                </Nav.Link>
-              ) : null}
+              {/* Гостевой интерфейс: доступ к заявке скрыт */}
             </Nav>
           </Navbar.Collapse>
         </Container>

@@ -8,6 +8,7 @@ export interface ShardingStrategyJSON {
   latency_coefficient: number;
   throughput_coefficient: number;
   reliability_coefficient: number;
+  short_description_en?: string;
 }
 
 export interface SystemLoadCartJSON {
@@ -42,9 +43,50 @@ export interface SystemLoadDetailResponse {
   strategies: SystemLoadStrategyDetailJSON[];
 }
 
-function minioBase(): string {
-  const raw = import.meta.env.VITE_MINIO_BASE as string | undefined;
-  return raw?.replace(/\/$/, "") ?? "";
+const MINIO_PUBLIC_BASE =
+  (import.meta.env.VITE_MINIO_PUBLIC_BASE?.replace(/\/$/, "") as string | undefined) ??
+  "http://localhost:9000/test";
+
+export const CART_UPDATED_EVENT = "system-load-cart-updated";
+
+function strategyTypeHint(titleRaw: string | undefined): string {
+  const title = titleRaw?.toLowerCase().trim() ?? "";
+  if (title.includes("geo")) {
+    return "Type: Geo Sharding (single-rule regional placement by user location).";
+  }
+  if (title.includes("composite")) {
+    return "Type: Composite Sharding (hybrid multi-rule routing, for example geo plus hash).";
+  }
+  if (title.includes("range")) {
+    return "Type: Range Sharding (ordered key ranges, optimized for interval scans).";
+  }
+  if (title.includes("hash")) {
+    return "Type: Hash Sharding (uniform key distribution by hash function).";
+  }
+  if (title.includes("directory")) {
+    return "Type: Directory-Based Sharding (lookup map key-to-shard for flexible routing).";
+  }
+  if (title.includes("dynamic")) {
+    return "Type: Dynamic Sharding (automatic split and merge based on load).";
+  }
+  return "Type: Database sharding strategy.";
+}
+
+export function strategyClipDescription(strategy: ShardingStrategyJSON): string {
+  const hint = strategyTypeHint(strategy.title);
+  const en = strategy.short_description_en?.trim();
+  if (en) return `${hint} ${en}`;
+
+  const title = strategy.title?.trim();
+  const description = strategy.description?.trim();
+
+  if (title && description) {
+    return `${hint} ${title}. ${description}`;
+  }
+  if (description) return `${hint} ${description}`;
+  if (title) return `${hint} ${title}`;
+
+  return hint;
 }
 
 export function fallbackImageUrl(): string {
@@ -67,18 +109,87 @@ export function resolveMediaUrl(key: string): string {
   ) {
     return key;
   }
-  const base = minioBase();
-  if (base) {
-    return `${base}/${key.replace(/^\//, "")}`;
-  }
-  return fallbackImageUrl();
+  return `${MINIO_PUBLIC_BASE}/${key.replace(/^\//, "")}`;
 }
 
-export async function fetchStrategiesByTitle(title?: string): Promise<ShardingStrategyJSON[]> {
-  const q = title?.trim() ? `?Title=${encodeURIComponent(title.trim())}` : "";
-  const res = await fetch(`/api/strategies${q}`);
-  if (!res.ok) {
-    throw new Error(`GET /api/strategies failed: ${res.status}`);
+export async function getSystemLoadCart(): Promise<SystemLoadCartJSON> {
+  try {
+    const res = await fetch("/api/system_loads/cart", {
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return (await res.json()) as SystemLoadCartJSON;
+  } catch {
+    return { has_draft: false, strategies_count: 0 };
   }
-  return (await res.json()) as ShardingStrategyJSON[];
+}
+
+export async function listStrategies(params?: { title?: string }): Promise<ShardingStrategyJSON[]> {
+  try {
+    let path = "/api/strategies";
+    if (params?.title) {
+      const q = new URLSearchParams();
+      q.append("Title", params.title);
+      path += `?${q.toString()}`;
+    }
+    const res = await fetch(path, { headers: { Accept: "application/json" } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return (await res.json()) as ShardingStrategyJSON[];
+  } catch {
+    return [];
+  }
+}
+
+export async function getStrategy(id: number): Promise<ShardingStrategyJSON | null> {
+  try {
+    const res = await fetch(`/api/strategies/${id}`, {
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return (await res.json()) as ShardingStrategyJSON;
+  } catch {
+    return null;
+  }
+}
+
+export async function getSystemLoad(id: number): Promise<SystemLoadDetailResponse | null> {
+  const token = localStorage.getItem("token");
+  const headers: Record<string, string> = { Accept: "application/json" };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  try {
+    const res = await fetch(`/api/system_loads/${id}`, { headers });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return (await res.json()) as SystemLoadDetailResponse;
+  } catch {
+    return null;
+  }
+}
+
+export async function addStrategyToSystemLoad(
+  strategyId: number,
+): Promise<{ ok: true } | { ok: false; status: number; message?: string }> {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    return { ok: false, status: 401, message: "Войдите в систему, чтобы добавить стратегию в заявку." };
+  }
+  try {
+    const res = await fetch(`/api/system_load_strategies/add/${strategyId}`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (res.ok || res.status === 201) return { ok: true };
+    let message: string | undefined;
+    try {
+      const j = (await res.json()) as { error?: string; message?: string; description?: string };
+      message = j.error ?? j.message ?? j.description;
+    } catch {
+      message = await res.text();
+    }
+    return { ok: false, status: res.status, message: message || `HTTP ${res.status}` };
+  } catch {
+    return { ok: false, status: 0, message: "Не удалось выполнить запрос." };
+  }
 }

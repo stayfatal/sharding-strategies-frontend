@@ -1,10 +1,12 @@
 import type { FormEvent } from "react";
 import { useCallback, useEffect, useState } from "react";
 import Form from "react-bootstrap/Form";
+import Spinner from "react-bootstrap/Spinner";
 import { useNavigate, useParams } from "react-router-dom";
 import { cloneSystemLoadDetail, MOCK_SYSTEM_LOAD_DETAIL } from "../../modules/mock";
 import {
   fallbackImageUrl,
+  getSystemLoad,
   resolveMediaUrl,
   type SystemLoadDetailResponse,
   type SystemLoadStrategyDetailJSON,
@@ -15,6 +17,7 @@ export default function SystemLoadPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState<SystemLoadDetailResponse | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const loadMock = useCallback(() => {
     if (!id) return null;
@@ -26,8 +29,34 @@ export default function SystemLoadPage() {
   }, [id]);
 
   useEffect(() => {
-    setData(loadMock());
-  }, [loadMock]);
+    if (!id) {
+      setData(null);
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    const load = async () => {
+      setLoading(true);
+      try {
+        const response = await getSystemLoad(Number(id));
+        if (cancelled) return;
+        if (response) {
+          setData(response);
+        } else {
+          setData(loadMock());
+        }
+      } catch {
+        if (cancelled) return;
+        setData(loadMock());
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+    void load();
+    return () => {
+      cancelled = true;
+    };
+  }, [id, loadMock]);
 
   const handleDelete = (e: FormEvent) => {
     e.preventDefault();
@@ -55,6 +84,16 @@ export default function SystemLoadPage() {
       };
     });
   };
+
+  if (loading) {
+    return (
+      <div className="system-load-page">
+        <div className="strategies-page__loading">
+          <Spinner animation="border" />
+        </div>
+      </div>
+    );
+  }
 
   if (!data) {
     return (

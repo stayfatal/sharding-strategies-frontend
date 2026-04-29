@@ -19,6 +19,7 @@ export const STRATEGIES_MOCK: ShardingStrategyJSON[] = [
     latency_coefficient: 1.8,
     throughput_coefficient: 0.6,
     reliability_coefficient: 0.7,
+    short_description_en: "Range shards group neighboring keys and speed up ordered scans for time-series data.",
   },
   {
     strategy_id: 2,
@@ -30,6 +31,7 @@ export const STRATEGIES_MOCK: ShardingStrategyJSON[] = [
     latency_coefficient: 1.0,
     throughput_coefficient: 1.2,
     reliability_coefficient: 0.9,
+    short_description_en: "Hash shards spread keys uniformly, balancing write load across partitions in OLTP systems.",
   },
   {
     strategy_id: 3,
@@ -42,6 +44,7 @@ export const STRATEGIES_MOCK: ShardingStrategyJSON[] = [
     latency_coefficient: 1.4,
     throughput_coefficient: 0.8,
     reliability_coefficient: 0.85,
+    short_description_en: "Geo shards place data near users, reducing latency and supporting regional compliance needs.",
   },
   {
     strategy_id: 4,
@@ -54,6 +57,7 @@ export const STRATEGIES_MOCK: ShardingStrategyJSON[] = [
     latency_coefficient: 2.2,
     throughput_coefficient: 0.5,
     reliability_coefficient: 0.95,
+    short_description_en: "Directory shards map each tenant key to a shard for flexible routing and controlled movement.",
   },
   {
     strategy_id: 5,
@@ -66,6 +70,7 @@ export const STRATEGIES_MOCK: ShardingStrategyJSON[] = [
     latency_coefficient: 1.2,
     throughput_coefficient: 1.0,
     reliability_coefficient: 0.92,
+    short_description_en: "Composite shards combine rules like geo plus hash to scale globally with balanced traffic.",
   },
   {
     strategy_id: 6,
@@ -78,6 +83,7 @@ export const STRATEGIES_MOCK: ShardingStrategyJSON[] = [
     latency_coefficient: 0.8,
     throughput_coefficient: 1.5,
     reliability_coefficient: 0.88,
+    short_description_en: "Dynamic shards split and merge automatically as traffic changes to keep cluster usage stable.",
   },
 ];
 
