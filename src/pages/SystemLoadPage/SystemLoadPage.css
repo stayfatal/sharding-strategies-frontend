@@ -40,3 +40,105 @@
   color: var(--acid) !important;
   font-weight: 600;
 }
+
+.system-load-page {
+  position: relative;
+}
+
+.system-load-page__blocking {
+  position: fixed;
+  z-index: 2000;
+  inset: 0;
+  background: rgba(8, 12, 16, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--acid);
+  font-weight: 600;
+}
+
+.system-load-detail--blocked {
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+.system-load-page__method-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.system-load-page__method-btn {
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--emerald-dirty);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.system-load-page__method-btn:hover:not(:disabled) {
+  border-color: var(--acid);
+  color: var(--acid);
+}
+
+.system-load-page__method-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.system-load-page__method-btn--accent {
+  border-color: rgba(177, 255, 5, 0.45);
+  color: var(--acid);
+}
+
+.system-load-page__methods-hint {
+  color: var(--text-muted);
+  font-size: 13px;
+  margin: 12px 0 20px;
+  max-width: 960px;
+}
+
+.load-table__actions {
+  vertical-align: top;
+}
+
+.system-load-page__row-btn {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  border: 1px solid var(--border-light);
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.system-load-page__row-btn:last-child {
+  margin-bottom: 0;
+}
+
+.system-load-page__row-btn:hover:not(:disabled) {
+  border-color: var(--acid);
+  color: var(--acid);
+}
+
+.system-load-page__row-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.system-load-page__row-btn--danger {
+  border-color: rgba(232, 30, 37, 0.45);
+  color: #ff6b6b;
+}

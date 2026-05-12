@@ -15,6 +15,12 @@ export default defineConfig({
         target: "http://localhost:8080",
         changeOrigin: true,
       },
+      // Публичные объекты MinIO: браузер → тот же origin (dev), прокси на localhost:9000
+      "/object-media": {
+        target: "http://localhost:9000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/object-media/, ""),
+      },
     },
   },
 });

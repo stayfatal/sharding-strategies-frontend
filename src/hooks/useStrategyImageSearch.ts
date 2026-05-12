@@ -31,7 +31,6 @@ export const useStrategyImageSearch = (initialItems: ClipSearchItem[], enabled: 
   const workerRef = useRef<Worker | null>(null);
   const embeddingsReadyRef = useRef(false);
   const pendingFileRef = useRef<File | null>(null);
-  const lastUploadedImageNameRef = useRef<string | null>(null);
   const itemsRef = useRef(initialItems);
   itemsRef.current = initialItems;
 
@@ -136,7 +135,7 @@ export const useStrategyImageSearch = (initialItems: ClipSearchItem[], enabled: 
     setItems((prevItems) => {
       if (!prevItems[0]?.embedding) return prevItems;
 
-      const threshold = 0.04;
+      const threshold = 0.01;
       const topK = 5;
 
       const processed = prevItems.map((item) => {
@@ -162,43 +161,11 @@ export const useStrategyImageSearch = (initialItems: ClipSearchItem[], enabled: 
         }
       }
 
-      if (visibleCount === 0) {
-        for (const item of processed.slice(0, topK)) {
-          item.isVisible = true;
-        }
-      }
-
-      const uploadedImageName = lastUploadedImageNameRef.current ?? "unknown image";
-      const topMatch = processed[0];
-      const secondMatch = processed[1];
-      const confidenceThreshold = 0.1;
-      const scoreGap = topMatch && secondMatch ? topMatch.score - secondMatch.score : null;
-      console.groupCollapsed(`[CLIP search] ${uploadedImageName}`);
-      console.info("Порог сходства:", threshold, "| Максимум результатов:", topK);
-      if (topMatch) {
-        const confidenceLabel =
-          topMatch.score >= confidenceThreshold ? "достаточная уверенность" : "низкая уверенность (почти угадывание)";
-        const gapLabel =
-          scoreGap !== null ? `| gap(top1-top2)=${scoreGap.toFixed(4)}` : "| gap(top1-top2)=n/a";
-        console.info("Описание картинки от нейронки:", topMatch.description);
-        console.info(`score=${topMatch.score.toFixed(4)} | ${confidenceLabel} ${gapLabel}`);
-      }
-      console.table(
-        processed.map((item) => ({
-          id: item.id,
-          description: item.description,
-          score: Number(item.score.toFixed(4)),
-          visible: item.isVisible,
-        })),
-      );
-      console.groupEnd();
-
       return processed;
     });
   }, [imageEmbedding]);
 
   const searchByImage = (file: File) => {
-    lastUploadedImageNameRef.current = file.name || "uploaded image";
     if (!workerRef.current || !embeddingsReadyRef.current) {
       pendingFileRef.current = file;
       return;

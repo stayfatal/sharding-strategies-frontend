@@ -1,0 +1,107 @@
+.auth-page--shard {
+  max-width: 440px;
+  margin: 32px auto;
+  padding: 0 20px 48px;
+}
+
+.auth-page--shard .auth-page__panel {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 28px 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.auth-page--shard .auth-page__title {
+  margin: 0 0 20px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.auth-page--shard .auth-page__error {
+  background: rgba(232, 30, 37, 0.12);
+  border: 1px solid rgba(232, 30, 37, 0.45);
+  color: #ff8a8a;
+  padding: 10px 12px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+.auth-page--shard .auth-page__form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.auth-page--shard .auth-page__label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-top: 8px;
+}
+
+.auth-page--shard .auth-page__input {
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 1rem;
+  background-color: var(--dark-bg);
+  color: var(--text-primary);
+}
+
+.auth-page--shard .auth-page__input:focus {
+  outline: none;
+  border-color: var(--acid);
+  box-shadow: 0 0 0 2px rgba(177, 255, 5, 0.15);
+}
+
+.auth-page--shard .auth-page__submit {
+  margin-top: 20px;
+  padding: 12px 16px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(177, 255, 5, 0.25), rgba(93, 108, 116, 0.35));
+  color: var(--acid);
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(177, 255, 5, 0.4);
+  transition:
+    filter 0.15s ease,
+    transform 0.1s ease;
+}
+
+.auth-page--shard .auth-page__submit:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.auth-page--shard .auth-page__submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.auth-page--shard .auth-page__spinner {
+  vertical-align: middle;
+}
+
+.auth-page--shard .auth-page__footer {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.auth-page--shard .auth-page__footer a {
+  color: var(--emerald-dirty);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-page--shard .auth-page__footer a:hover {
+  color: var(--acid);
+  text-decoration: underline;
+}

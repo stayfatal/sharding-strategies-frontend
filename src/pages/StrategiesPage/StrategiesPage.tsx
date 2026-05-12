@@ -1,5 +1,5 @@
 import { type ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
-import { Alert, Button, ProgressBar } from "react-bootstrap";
+import { Alert, Button } from "react-bootstrap";
 import Spinner from "react-bootstrap/Spinner";
 import { Link } from "react-router-dom";
 import CartRow from "../../components/CartRow/CartRow";
@@ -74,7 +74,6 @@ export default function StrategiesPage() {
   const {
     items: clipProcessed,
     ready: clipReady,
-    progress: clipProgress,
     imageEmbedding,
     workerError,
     searchByImage,
@@ -133,8 +132,6 @@ export default function StrategiesPage() {
   };
 
   const imageSearchActive = Boolean(imageEmbedding);
-  const showClipProgress =
-    clipSessionActive && clipItems.length > 0 && !clipReady && !workerError;
   const uploadLabel =
     clipSessionActive && !clipReady ? "Загрузка нейросети..." : "Загрузить фото";
   const isUploadDisabled = clipItems.length === 0 || (clipSessionActive && !clipReady);
@@ -143,76 +140,68 @@ export default function StrategiesPage() {
 
   return (
     <div className="strategies-page">
-      <StrategyFilterBar query={searchTitle} onQueryChange={setSearchTitle} onSearch={handleSearch} />
+      <div className="toolbar strategies-page__unified-toolbar">
+        <StrategyFilterBar
+          query={searchTitle}
+          onQueryChange={setSearchTitle}
+          onSearch={handleSearch}
+        />
+        <section
+          className="strategies-page__clip-toolbar clip-search-section"
+          aria-label="Поиск стратегии по изображению"
+        >
+          {workerError ? (
+            <Alert variant="success" className="clip-search-section__alert clip-search-section__alert--toolbar">
+              Не удалось загрузить модель или обработать запрос: {workerError}
+            </Alert>
+          ) : null}
+
+          {clipItems.length === 0 ? (
+            <p className="clip-search-section__empty-catalog clip-search-section__empty-catalog--toolbar">
+              Каталог…
+            </p>
+          ) : (
+            <div className="clip-search-section__panel clip-search-section__panel--toolbar">
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                className="clip-search-section__file-input"
+                onChange={handleImageUpload}
+              />
+
+              <div className="clip-search-section__preview-wrap">
+                {selectedImage ? (
+                  <img src={selectedImage} alt="" className="clip-search-section__preview-image" />
+                ) : (
+                  <div className="clip-search-section__placeholder-image">Нет фото</div>
+                )}
+              </div>
+
+              <div className="clip-search-section__action-panel clip-search-section__action-panel--toolbar">
+                <Button
+                  className="clip-search-section__btn-upload"
+                  onClick={handleUploadButtonClick}
+                  disabled={isUploadDisabled}
+                >
+                  {uploadLabel}
+                </Button>
+
+                <Button
+                  variant="outline-success"
+                  onClick={handleClearImage}
+                  disabled={!canResetImage}
+                >
+                  Сбросить
+                </Button>
+              </div>
+            </div>
+          )}
+        </section>
+        <CartRow className="strategies-page__toolbar-cart" />
+      </div>
       <div className="space">
         <main className="strategies-page__main">
-          <CartRow />
-          <section
-            className="strategies-page__clip-search clip-search-section"
-            aria-labelledby="clip-search-title"
-          >
-            <h2 id="clip-search-title" className="clip-search-section__heading">
-              Поиск стратегии по изображению
-            </h2>
-
-            {workerError ? (
-              <Alert variant="success" className="clip-search-section__alert">
-                Не удалось загрузить модель или обработать запрос: {workerError}
-              </Alert>
-            ) : null}
-
-            {clipItems.length === 0 ? (
-              <p className="clip-search-section__empty-catalog">
-                Загрузите каталог стратегий...
-              </p>
-            ) : (
-              <div className="clip-search-section__panel">
-                <input
-                  type="file"
-                  accept="image/*"
-                  ref={fileInputRef}
-                  className="clip-search-section__file-input"
-                  onChange={handleImageUpload}
-                />
-
-                <div className="clip-search-section__preview-wrap">
-                  {selectedImage ? (
-                    <img src={selectedImage} alt="" className="clip-search-section__preview-image" />
-                  ) : (
-                    <div className="clip-search-section__placeholder-image">Нет фото</div>
-                  )}
-                </div>
-
-                <div className="clip-search-section__action-panel">
-                  <Button
-                    className="clip-search-section__btn-upload"
-                    variant="success"
-                    onClick={handleUploadButtonClick}
-                    disabled={isUploadDisabled}
-                  >
-                    {uploadLabel}
-                  </Button>
-
-                  {showClipProgress ? (
-                    <ProgressBar
-                      className="clip-search-section__progress"
-                      now={clipProgress}
-                      label={`${Math.round(clipProgress)}%`}
-                      animated
-                    />
-                  ) : null}
-
-                  <Button
-                    variant="outline-success"
-                    onClick={handleClearImage}
-                    disabled={!canResetImage}
-                  >
-                    Сбросить
-                  </Button>
-                </div>
-              </div>
-            )}
-          </section>
           {loading ? (
             <div className="strategies-page__loading">
               <Spinner animation="border" role="status" aria-label="Загрузка">

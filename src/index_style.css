@@ -125,15 +125,6 @@
   opacity: 0.8;
 }
 
-.strategies-page__main .cart-row {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  padding-left: 0;
-  padding-right: 22px;
-  box-sizing: border-box;
-}
-
 .strategies-page__grid {
   min-height: 120px;
   padding-bottom: 24px;

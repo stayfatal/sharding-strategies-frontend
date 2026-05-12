@@ -41,6 +41,22 @@ export default function BreadCrumbs() {
       return [{ label: "Главная" }];
     }
 
+    if (pathname === ROUTES.SIGN_IN) {
+      return [{ label: "Главная", to: "/" }, { label: "Вход" }];
+    }
+
+    if (pathname === ROUTES.SIGN_UP) {
+      return [{ label: "Главная", to: "/" }, { label: "Регистрация" }];
+    }
+
+    if (pathname === ROUTES.SYSTEM_LOADS) {
+      return [{ label: "Главная", to: "/" }, { label: "Заявки" }];
+    }
+
+    if (pathname === ROUTES.PROFILE) {
+      return [{ label: "Главная", to: "/" }, { label: "Личный кабинет" }];
+    }
+
     const stratMatch = matchPath(ROUTES.STRATEGY, pathname);
     if (stratMatch?.params.id) {
       const title =
@@ -51,7 +67,10 @@ export default function BreadCrumbs() {
 
     const loadMatch = matchPath(ROUTES.SYSTEM_LOAD, pathname);
     if (loadMatch?.params.id) {
-      return [{ label: "Главная", to: "/" }, { label: `Заявка №${loadMatch.params.id}` }];
+      return [
+        { label: "Главная", to: "/" },
+        { label: `Заявка №${loadMatch.params.id}` },
+      ];
     }
 
     return [{ label: "Главная", to: "/" }, { label: "Страница" }];

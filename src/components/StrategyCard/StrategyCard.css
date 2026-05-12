@@ -1,0 +1,4 @@
+.card.card--no-add-btn {
+  border-bottom: 1px solid var(--border);
+  border-radius: 16px;
+}

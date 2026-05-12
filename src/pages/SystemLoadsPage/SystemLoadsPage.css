@@ -1,0 +1,123 @@
+.system-loads-page {
+  padding: 0 20px 48px;
+}
+
+.system-loads-page__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.system-loads-page__heading {
+  margin: 20px 0 8px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.system-loads-page__filters {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.system-loads-page__filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-end;
+}
+
+.system-loads-page__fg {
+  min-width: 160px;
+}
+
+.system-loads-page__fg--grow {
+  flex: 1;
+  min-width: 200px;
+}
+
+.system-loads-page__filters .form-label {
+  color: var(--text-secondary);
+}
+
+.system-loads-page__filters .form-control,
+.system-loads-page__filters .form-select {
+  background: var(--dark-bg);
+  border: 1px solid var(--border-light);
+  color: var(--text-primary);
+}
+
+.system-loads-page__apply {
+  margin-top: 16px;
+  font-weight: 600;
+  border-color: rgba(177, 255, 5, 0.5) !important;
+  background-color: rgba(177, 255, 5, 0.12) !important;
+  color: var(--acid) !important;
+}
+
+.system-loads-page__apply:hover:not(:disabled) {
+  background-color: rgba(177, 255, 5, 0.2) !important;
+  color: var(--acid) !important;
+}
+
+.system-loads-page__btn-finish {
+  border-color: rgba(177, 255, 5, 0.5) !important;
+  background-color: rgba(177, 255, 5, 0.12) !important;
+  color: var(--acid) !important;
+  font-weight: 600;
+}
+
+.system-loads-page__btn-reject {
+  border-color: rgba(232, 30, 37, 0.45) !important;
+  color: #ff6b6b !important;
+  background-color: transparent !important;
+  font-weight: 600;
+}
+
+.system-loads-page__error {
+  color: #ff6b6b;
+  margin-bottom: 12px;
+}
+
+.system-loads-page__loader {
+  display: flex;
+  justify-content: center;
+  padding: 32px 0;
+}
+
+.system-loads-page__table-wrap {
+  overflow-x: auto;
+}
+
+.system-loads-page__table {
+  --bs-table-bg: var(--card-bg);
+  --bs-table-color: var(--text-primary);
+  --bs-table-border-color: var(--border-light);
+}
+
+.system-loads-page__linkish {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--emerald-dirty);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.system-loads-page__linkish:hover {
+  color: var(--acid);
+}
+
+.system-loads-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.system-loads-page__empty {
+  color: var(--text-secondary);
+  margin-top: 16px;
+}

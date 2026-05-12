@@ -16,7 +16,7 @@ export default function StrategyFilterBar({ query, onQueryChange, onSearch }: St
   };
 
   return (
-    <div className="toolbar strategy-filter-bar">
+    <div className="strategy-filter-bar">
       <Form onSubmit={handleSubmit} className="search-form strategy-filter-bar__form">
         <Form.Control
           type="text"

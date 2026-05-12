@@ -2,9 +2,23 @@ import { Link } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { logoutUser } from "../../store/slices/userSlice";
+import { ROUTES } from "../../routePaths";
 import "./AppHeader.css";
 
 export default function AppHeader() {
+  const dispatch = useAppDispatch();
+  const { isAuthenticated, username } = useAppSelector((s) => s.user);
+  const cart = useAppSelector((s) => s.systemLoadApplication.cart);
+
+  const handleLogout = () => {
+    void dispatch(logoutUser());
+  };
+
+  const draftActive =
+    Boolean(cart?.has_draft && cart.strategies_count > 0 && cart.id != null);
+
   return (
     <header>
       <Navbar
@@ -24,7 +38,66 @@ export default function AppHeader() {
               <Nav.Link as={Link} to="/" className="shard-nav-link" eventKey="catalog">
                 Каталог стратегий
               </Nav.Link>
-              {/* Гостевой интерфейс: доступ к заявке скрыт */}
+              {isAuthenticated ? (
+                <>
+                  <Nav.Link
+                    as={Link}
+                    to={ROUTES.SYSTEM_LOADS}
+                    className="shard-nav-link"
+                    eventKey="loads"
+                  >
+                    Заявки
+                  </Nav.Link>
+                  <Nav.Link
+                    as={Link}
+                    to={ROUTES.PROFILE}
+                    className="shard-nav-link"
+                    eventKey="profile"
+                  >
+                    Личный кабинет
+                  </Nav.Link>
+                </>
+              ) : null}
+              {draftActive && cart?.id != null ? (
+                <Nav.Link
+                  as={Link}
+                  to={`/system_load/${cart.id}`}
+                  className="shard-nav-link"
+                  eventKey="draft"
+                >
+                  Текущая заявка
+                </Nav.Link>
+              ) : (
+                <Nav.Link className="shard-nav-link shard-nav-link--muted" eventKey="draft-off" disabled>
+                  Текущая заявка
+                </Nav.Link>
+              )}
+              {isAuthenticated ? (
+                <>
+                  <Nav.Link
+                    as={Link}
+                    to="/"
+                    className="shard-nav-link"
+                    eventKey="logout"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLogout();
+                    }}
+                  >
+                    Выход
+                  </Nav.Link>
+                  <span className="shard-navbar__username d-none d-lg-inline">{username}</span>
+                </>
+              ) : (
+                <>
+                  <Nav.Link as={Link} to={ROUTES.SIGN_IN} className="shard-nav-link" eventKey="signin">
+                    Вход
+                  </Nav.Link>
+                  <Nav.Link as={Link} to={ROUTES.SIGN_UP} className="shard-nav-link" eventKey="signup">
+                    Регистрация
+                  </Nav.Link>
+                </>
+              )}
             </Nav>
           </Navbar.Collapse>
         </Container>

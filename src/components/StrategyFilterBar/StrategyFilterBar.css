@@ -1,9 +1,9 @@
 .strategy-filter-bar__form {
   width: 100%;
-  max-width: 560px;
-  margin: 0 auto;
+  max-width: none;
+  margin: 0;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .strategy-filter-bar__form .search-input {

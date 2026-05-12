@@ -71,3 +71,17 @@
 .shard-nav-link:focus {
   color: var(--acid) !important;
 }
+
+.shard-nav-link--muted,
+.shard-nav-link:disabled {
+  color: var(--text-muted) !important;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.shard-navbar__username {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding-left: 8px;
+}
