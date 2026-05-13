@@ -215,7 +215,7 @@ export default function SystemLoadPage() {
                 disabled={busy}
                 onClick={() => handleSaveDescription()}
               >
-                1. Сохранить описание заявки (PUT /system_loads)
+                Сохранить описание заявки
               </button>
               <button
                 type="button"
@@ -223,15 +223,15 @@ export default function SystemLoadPage() {
                 disabled={busy}
                 onClick={() => handleForm()}
               >
-                2. Сформировать заявку (PUT /form)
+                Сформировать заявку
               </button>
             </div>
           ) : null}
         </div>
 
         <p className="system-load-page__methods-hint">
-          Отдельные действия для домена заявки и связей «заявка–стратегия» (swagger + thunk): сохранение
-          описания, строк таблицы, удаление строки, формирование и удаление черновика.
+          Доступны действия с заявкой и её строками: сохранение описания, сохранение строк таблицы,
+          удаление строки, формирование и удаление черновика.
         </p>
 
         <table className="load-table">
@@ -317,7 +317,7 @@ export default function SystemLoadPage() {
                         disabled={busy || lineBusyKey(row.strategy_id) || Boolean(mockData)}
                         onClick={() => handleSaveRow(row.strategy_id)}
                       >
-                        4. Сохранить строку (PUT /system_load_strategies)
+                        Сохранить строку
                       </button>
                       <button
                         type="button"
@@ -325,7 +325,7 @@ export default function SystemLoadPage() {
                         disabled={busy || rmBusy(row.strategy_id) || Boolean(mockData)}
                         onClick={() => handleRemoveRow(row.strategy_id)}
                       >
-                        5. Удалить из заявки (DELETE)
+                        Удалить из заявки
                       </button>
                     </td>
                   ) : null}
@@ -338,7 +338,7 @@ export default function SystemLoadPage() {
         {isDraft ? (
           <form className="system-load-page__delete-form" onSubmit={handleDeleteApplication}>
             <button type="submit" className="btn-delete" disabled={busy || Boolean(mockData)}>
-              3. Удалить заявку (DELETE /system_loads)
+              Удалить заявку
             </button>
           </form>
         ) : null}

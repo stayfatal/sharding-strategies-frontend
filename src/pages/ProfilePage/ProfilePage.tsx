@@ -28,10 +28,8 @@ export default function ProfilePage() {
       <div className="profile-page__inner">
         <h1 className="profile-page__title">Личный кабинет</h1>
         <Alert variant="info" className="profile-page__alert">
-          Смена пароля и изменение профиля: в актуальном <code>swagger.yaml</code> бэкенда нет
-          соответствующих эндпоинтов (только <code>/users/register</code>,{" "}
-          <code>/users/login</code>, <code>/users/logout</code>). Ниже отображаются данные
-          сессии из JWT и Redux.
+          Смена пароля и редактирование профиля пока недоступны. Ниже отображаются данные
+          текущей сессии из JWT и Redux.
         </Alert>
         <Form className="profile-page__form">
           <Form.Group className="mb-3">
