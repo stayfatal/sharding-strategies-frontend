@@ -2,8 +2,10 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Spinner } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { loginUser } from "../../store/slices/userSlice";
+import { authFailed, authStarted, authSucceeded } from "../../store/slices/userSlice";
 import { fetchSystemLoadApplicationCart } from "../../store/slices/systemLoadApplicationSlice";
+import { authLoginRequest } from "../../modules/authApi";
+import { apiErrMessage } from "../../store/utils/apiError";
 import { ROUTES } from "../../routePaths";
 import "./SignInPage.css";
 
@@ -20,12 +22,14 @@ export default function SignInPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.login || !form.password) return;
+    dispatch(authStarted());
     try {
-      await dispatch(loginUser(form)).unwrap();
+      await authLoginRequest(form);
+      dispatch(authSucceeded({ login: form.login }));
       void dispatch(fetchSystemLoadApplicationCart());
       navigate(ROUTES.STRATEGIES, { replace: true });
-    } catch {
-      void 0;
+    } catch (err) {
+      dispatch(authFailed(apiErrMessage(err)));
     }
   };
 

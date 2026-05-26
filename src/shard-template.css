@@ -542,6 +542,11 @@ a.card img {
     background-color: var(--acid-hover);
 }
 
+/* LAB8: адаптив каталога и карточек (для показа на защите)
+   >= 993px: 3 колонки, карточка min-height 300px, изображение 200px
+   <= 992px: 2 колонки
+   <= 640px: 1 колонка */
+
 
 
 .system-load-icon--inactive {

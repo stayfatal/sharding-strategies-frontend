@@ -162,7 +162,7 @@ export class HttpClient<SecurityDataType = unknown> {
     }, new FormData());
   }
 
-  public request = async <T = unknown, _E = unknown>({
+  public request = async <T = unknown, E = unknown>({
     secure,
     path,
     type,
@@ -170,7 +170,7 @@ export class HttpClient<SecurityDataType = unknown> {
     format,
     body,
     ...params
-  }: FullRequestParams): Promise<AxiosResponse<T>> => {
+  }: FullRequestParams): Promise<AxiosResponse<T, E>> => {
     const secureParams =
       ((typeof secure === "boolean" ? secure : this.secure) &&
         this.securityWorker &&
@@ -212,7 +212,7 @@ export class HttpClient<SecurityDataType = unknown> {
   };
 }
 
-export class Api<SecurityDataType extends unknown = unknown> extends HttpClient<SecurityDataType> {
+export class Api<SecurityDataType = unknown> extends HttpClient<SecurityDataType> {
   /** Связь стратегии с заявкой (многие-ко-многим через таблицу нагрузки) */
   systemLoadStrategyBinding = {
     addStrategyToSystemLoadDraft: (strategyId: number, params: RequestParams = {}) =>

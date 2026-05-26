@@ -21,6 +21,17 @@ function statusLabel(s: string | undefined): string {
   return s ? (m[s] ?? s) : "—";
 }
 
+function formatDateTime(value: string | null | undefined): string {
+  if (!value) return "—";
+  return new Date(value).toLocaleString("ru-RU", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 export default function SystemLoadsPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -29,6 +40,7 @@ export default function SystemLoadsPage() {
     (s) => s.systemLoadApplication,
   );
   const [creatorFilter, setCreatorFilter] = useState("");
+  const [topicFilter, setTopicFilter] = useState("");
   const [draftFrom, setDraftFrom] = useState(filters.fromDate);
   const [draftTo, setDraftTo] = useState(filters.toDate);
   const [draftStatus, setDraftStatus] = useState(filters.status);
@@ -54,10 +66,16 @@ export default function SystemLoadsPage() {
   }, [isAuthenticated, navigate, load]);
 
   const visible = useMemo(() => {
-    const q = creatorFilter.trim().toLowerCase();
-    if (!q) return list;
-    return list.filter((a) => (a.creator_login ?? "").toLowerCase().includes(q));
-  }, [list, creatorFilter]);
+    const creatorQuery = creatorFilter.trim().toLowerCase();
+    const topicQuery = topicFilter.trim().toLowerCase();
+    return list.filter((a) => {
+      const creatorOk =
+        !creatorQuery || (a.creator_login ?? "").toLowerCase().includes(creatorQuery);
+      const topicOk =
+        !topicQuery || (a.description ?? "").toLowerCase().includes(topicQuery);
+      return creatorOk && topicOk;
+    });
+  }, [list, creatorFilter, topicFilter]);
 
   const handleApplyFilters = () => {
     dispatch(
@@ -125,6 +143,15 @@ export default function SystemLoadsPage() {
                 />
               </Form.Group>
             ) : null}
+            <Form.Group className="system-loads-page__fg system-loads-page__fg--grow">
+              <Form.Label>Тема (на клиенте)</Form.Label>
+              <Form.Control
+                type="text"
+                value={topicFilter}
+                onChange={(e) => setTopicFilter(e.target.value)}
+                placeholder="Часть темы заявки"
+              />
+            </Form.Group>
           </div>
           <Button className="system-loads-page__apply" onClick={handleApplyFilters}>
             Применить фильтры
@@ -145,6 +172,8 @@ export default function SystemLoadsPage() {
               <tr>
                 <th>ID</th>
                 <th>Статус</th>
+                <th>Тема</th>
+                <th>Результат</th>
                 <th>Создатель</th>
                 <th>Создана</th>
                 <th>Формирование</th>
@@ -170,22 +199,16 @@ export default function SystemLoadsPage() {
                       </button>
                     </td>
                     <td>{statusLabel(row.status)}</td>
+                    <td className="system-loads-page__topic">
+                      {row.description?.trim() ? row.description : "—"}
+                    </td>
+                    <td className="system-loads-page__result">
+                      {row.completed_item_count} непустых
+                    </td>
                     <td>{row.creator_login ?? "—"}</td>
-                    <td>
-                      {row.created_at
-                        ? new Date(row.created_at).toLocaleString("ru-RU")
-                        : "—"}
-                    </td>
-                    <td>
-                      {row.forming_date
-                        ? new Date(row.forming_date).toLocaleDateString("ru-RU")
-                        : "—"}
-                    </td>
-                    <td>
-                      {row.finish_date
-                        ? new Date(row.finish_date).toLocaleString("ru-RU")
-                        : "—"}
-                    </td>
+                    <td>{formatDateTime(row.created_at)}</td>
+                    <td>{formatDateTime(row.forming_date)}</td>
+                    <td>{formatDateTime(row.finish_date)}</td>
                     <td>{row.moderator_login ?? "—"}</td>
                     {isModerator ? (
                       <td>

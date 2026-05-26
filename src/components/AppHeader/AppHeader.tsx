@@ -3,7 +3,8 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { logoutUser } from "../../store/slices/userSlice";
+import { clearSession } from "../../store/slices/userSlice";
+import { authLogoutRequest } from "../../modules/authApi";
 import { ROUTES } from "../../routePaths";
 import "./AppHeader.css";
 
@@ -13,7 +14,16 @@ export default function AppHeader() {
   const cart = useAppSelector((s) => s.systemLoadApplication.cart);
 
   const handleLogout = () => {
-    void dispatch(logoutUser());
+    void (async () => {
+      try {
+        await authLogoutRequest();
+      } catch {
+        void 0;
+      } finally {
+        localStorage.removeItem("token");
+        dispatch(clearSession());
+      }
+    })();
   };
 
   const draftActive =
