@@ -11,7 +11,7 @@ import type {
   SystemLoadJSON,
 } from "../../modules/strategiesApi";
 import { apiErrMessage } from "../utils/apiError";
-import { logoutUser } from "./userSlice";
+import { clearSession } from "./userSlice";
 
 function mapShardingStrategy(
   s: WebBackendInternalAppSerializerShardingStrategyJSON,
@@ -323,8 +323,7 @@ const systemLoadApplicationSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(logoutUser.fulfilled, () => buildInitialState())
-      .addCase(logoutUser.rejected, () => buildInitialState())
+      .addCase(clearSession, () => buildInitialState())
       .addCase(fetchSystemLoadApplicationCart.pending, (state) => {
         state.cartLoading = true;
       })

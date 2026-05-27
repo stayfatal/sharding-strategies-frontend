@@ -1,5 +1,6 @@
 import axios from "axios";
 import type { ShardingStrategyJSON } from "./strategiesApi.types";
+import { apiBaseUrl, minioPublicBase } from "./runtimeConfig";
 
 export type {
   ShardingStrategyJSON,
@@ -9,7 +10,7 @@ export type {
   SystemLoadDetailResponse,
 } from "./strategiesApi.types";
 
-const baseURL = import.meta.env.VITE_API_BASE_URL ?? "/api";
+const baseURL = apiBaseUrl;
 
 /** Список и карточка стратегий (услуги / шардирование): только axios, без swagger-клиента. */
 export const strategiesAxios = axios.create({
@@ -21,9 +22,7 @@ export const strategiesAxios = axios.create({
  * В dev по умолчанию через reverse proxy Vite: `/object-media` → localhost:9000 (см. vite.config.ts).
  * Для продакшена задайте VITE_MINIO_PUBLIC_BASE (например полный URL бакета или CDN).
  */
-const MINIO_PUBLIC_BASE =
-  (import.meta.env.VITE_MINIO_PUBLIC_BASE?.replace(/\/$/, "") as string | undefined) ??
-  (import.meta.env.DEV ? "/object-media/test" : "http://localhost:9000/test");
+const MINIO_PUBLIC_BASE = minioPublicBase;
 
 export const CART_UPDATED_EVENT = "system-load-cart-updated";
 

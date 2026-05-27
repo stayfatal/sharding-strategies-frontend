@@ -197,13 +197,13 @@ export default function SystemLoadPage() {
             </div>
           </div>
           <Form.Group className="system-load-page__description" controlId="system-load-description">
-            <Form.Label>Описание заявки</Form.Label>
+            <Form.Label>Тема заявки</Form.Label>
             <Form.Control
               as="textarea"
               rows={3}
               value={descriptionDraft}
               onChange={(e) => setDescriptionDraft(e.target.value)}
-              placeholder="Кратко опишите сценарий нагрузки…"
+              placeholder="Кратко укажите тему или сценарий нагрузки…"
               disabled={!isDraft || Boolean(mockData)}
             />
           </Form.Group>
@@ -215,7 +215,7 @@ export default function SystemLoadPage() {
                 disabled={busy}
                 onClick={() => handleSaveDescription()}
               >
-                Сохранить описание заявки
+                Сохранить тему заявки
               </button>
               <button
                 type="button"
@@ -229,111 +229,107 @@ export default function SystemLoadPage() {
           ) : null}
         </div>
 
-        <p className="system-load-page__methods-hint">
-          Доступны действия с заявкой и её строками: сохранение описания, сохранение строк таблицы,
-          удаление строки, формирование и удаление черновика.
-        </p>
+        <div className="system-load-lines" aria-label="Стратегии в заявке">
+          {data.strategies.map((row) => {
+            const photo = resolveMediaUrl(row.strategy.photo_url) || fallbackImageUrl();
+            const draft = rowDrafts[row.strategy_id];
+            const responseValue =
+              draft?.response_time === null || draft?.response_time === undefined
+                ? ""
+                : draft.response_time;
 
-        <table className="load-table">
-          <thead>
-            <tr>
-              <th className="load-table__col-photo">Изображение</th>
-              <th>Стратегия</th>
-              <th>Данные (ГБ)</th>
-              <th>Запросов/сек</th>
-              <th>Время отклика (мс)</th>
-              {isDraft ? <th>Действия со строкой (м-м)</th> : null}
-            </tr>
-          </thead>
-          <tbody>
-            {data.strategies.map((row) => {
-              const photo = resolveMediaUrl(row.strategy.photo_url) || fallbackImageUrl();
-              const draft = rowDrafts[row.strategy_id];
-              return (
-                <tr key={`${row.system_load_id}-${row.strategy_id}`}>
-                  <td className="load-table__col-photo">
-                    <img src={photo} alt={row.strategy.title} />
-                  </td>
-                  <td>{row.strategy.title}</td>
-                  <td>
-                    <Form.Control
-                      type="number"
-                      min={0}
-                      className="load-table__input"
-                      value={draft?.data_volume ?? row.data_volume}
-                      disabled={!isDraft}
-                      onChange={(e) =>
-                        updateRowDraft(row.strategy_id, {
-                          data_volume: Number(e.target.value) || 0,
-                        })
+            return (
+              <article
+                className="system-load-line-card"
+                key={`${row.system_load_id}-${row.strategy_id}`}
+              >
+                <img
+                  src={photo}
+                  alt={row.strategy.title}
+                  className="system-load-line-card__image"
+                />
+                <div className="system-load-line-card__title">{row.strategy.title}</div>
+
+                <label className="system-load-line-card__field">
+                  <span>Данные, ГБ</span>
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    className="load-table__input"
+                    value={draft?.data_volume ?? row.data_volume}
+                    disabled={!isDraft}
+                    onChange={(e) =>
+                      updateRowDraft(row.strategy_id, {
+                        data_volume: Number(e.target.value) || 0,
+                      })
+                    }
+                  />
+                </label>
+
+                <label className="system-load-line-card__field">
+                  <span>Запросов/сек</span>
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    className="load-table__input"
+                    value={draft?.query_count ?? row.query_count}
+                    disabled={!isDraft}
+                    onChange={(e) =>
+                      updateRowDraft(row.strategy_id, {
+                        query_count: Number(e.target.value) || 0,
+                      })
+                    }
+                  />
+                </label>
+
+                <label className="system-load-line-card__field system-load-line-card__field--result">
+                  <span>Результат, мс</span>
+                  <Form.Control
+                    type="number"
+                    min={0}
+                    step={0.1}
+                    className="load-table__input load-table__input--accent"
+                    value={responseValue}
+                    placeholder="—"
+                    disabled={!isDraft}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      if (v === "") {
+                        updateRowDraft(row.strategy_id, { response_time: null });
+                        return;
                       }
-                    />
-                  </td>
-                  <td>
-                    <Form.Control
-                      type="number"
-                      min={0}
-                      className="load-table__input"
-                      value={draft?.query_count ?? row.query_count}
-                      disabled={!isDraft}
-                      onChange={(e) =>
-                        updateRowDraft(row.strategy_id, {
-                          query_count: Number(e.target.value) || 0,
-                        })
-                      }
-                    />
-                  </td>
-                  <td className="load-table__col-result">
-                    <Form.Control
-                      type="number"
-                      min={0}
-                      step={0.1}
-                      className="load-table__input load-table__input--accent"
-                      value={
-                        draft?.response_time === null || draft?.response_time === undefined
-                          ? ""
-                          : draft.response_time
-                      }
-                      placeholder="—"
-                      disabled={!isDraft}
-                      onChange={(e) => {
-                        const v = e.target.value;
-                        if (v === "") {
-                          updateRowDraft(row.strategy_id, { response_time: null });
-                          return;
-                        }
-                        const n = Number(v);
-                        updateRowDraft(row.strategy_id, {
-                          response_time: Number.isFinite(n) ? n : null,
-                        });
-                      }}
-                    />
-                  </td>
-                  {isDraft ? (
-                    <td className="load-table__actions">
-                      <button
-                        type="button"
-                        className="system-load-page__row-btn"
-                        disabled={busy || lineBusyKey(row.strategy_id) || Boolean(mockData)}
-                        onClick={() => handleSaveRow(row.strategy_id)}
-                      >
-                        Сохранить строку
-                      </button>
-                      <button
-                        type="button"
-                        className="system-load-page__row-btn system-load-page__row-btn--danger"
-                        disabled={busy || rmBusy(row.strategy_id) || Boolean(mockData)}
-                        onClick={() => handleRemoveRow(row.strategy_id)}
-                      >
-                        Удалить из заявки
-                      </button>
-                    </td>
-                  ) : null}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                      const n = Number(v);
+                      updateRowDraft(row.strategy_id, {
+                        response_time: Number.isFinite(n) ? n : null,
+                      });
+                    }}
+                  />
+                </label>
+
+                {isDraft ? (
+                  <div className="system-load-line-card__actions">
+                    <button
+                      type="button"
+                      className="system-load-page__row-btn"
+                      disabled={busy || lineBusyKey(row.strategy_id) || Boolean(mockData)}
+                      onClick={() => handleSaveRow(row.strategy_id)}
+                    >
+                      Сохранить
+                    </button>
+                    <button
+                      type="button"
+                      className="system-load-page__row-btn system-load-page__row-btn--danger"
+                      disabled={busy || rmBusy(row.strategy_id) || Boolean(mockData)}
+                      onClick={() => handleRemoveRow(row.strategy_id)}
+                    >
+                      Удалить
+                    </button>
+                  </div>
+                ) : null}
+              </article>
+            );
+          })}
+        </div>
 
         {isDraft ? (
           <form className="system-load-page__delete-form" onSubmit={handleDeleteApplication}>

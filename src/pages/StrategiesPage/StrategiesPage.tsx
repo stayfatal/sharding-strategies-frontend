@@ -14,12 +14,15 @@ import {
   type ShardingStrategyJSON,
 } from "../../modules/strategiesApi";
 import { useStrategyImageSearch } from "../../hooks/useStrategyImageSearch";
+import { useAppDispatch, useAppSelector } from "../../store/hooks";
+import { setStrategyTitleQuery } from "../../store/slices/strategyFilterSlice";
 import "./StrategiesPage.css";
 
 export default function StrategiesPage() {
+  const dispatch = useAppDispatch();
+  const searchTitle = useAppSelector((s) => s.strategyFilter.titleQuery);
   const [clipSourceStrategies, setClipSourceStrategies] = useState<ShardingStrategyJSON[]>([]);
   const [displayStrategies, setDisplayStrategies] = useState<ShardingStrategyJSON[]>([]);
-  const [searchTitle, setSearchTitle] = useState("");
   const [loading, setLoading] = useState(false);
   const [useMock, setUseMock] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -143,7 +146,7 @@ export default function StrategiesPage() {
       <div className="toolbar strategies-page__unified-toolbar">
         <StrategyFilterBar
           query={searchTitle}
-          onQueryChange={setSearchTitle}
+          onQueryChange={(value) => dispatch(setStrategyTitleQuery(value))}
           onSearch={handleSearch}
         />
         <section
